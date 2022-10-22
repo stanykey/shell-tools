@@ -56,3 +56,4 @@ repos:
         args:
           - --ignore-missing-imports
           - --strict
+          - --allow-untyped-decorators
