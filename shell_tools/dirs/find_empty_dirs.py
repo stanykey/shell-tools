@@ -1,8 +1,10 @@
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser
+from argparse import Namespace
+from collections.abc import Callable
 from pathlib import Path
 
 
-def get_empty_directories(root_dir: Path, empty_files=False) -> list[Path]:
+def get_empty_directories(root_dir: Path, empty_files: bool = False) -> list[Path]:
     result = []
 
     dirs = [path for path in root_dir.iterdir() if path.is_dir()]
@@ -21,42 +23,40 @@ def get_empty_directories(root_dir: Path, empty_files=False) -> list[Path]:
     return result
 
 
-def print_dirs(dirs: list[Path]):
-    print(*dirs, sep='\n')
+def print_dirs(dirs: list[Path]) -> None:
+    print(*dirs, sep="\n")
 
 
-def remove_dirs(dirs: list[Path]):
+def remove_dirs(dirs: list[Path]) -> None:
     actions = [f'remove "{path}"' for path in dirs]
-    print(*actions, sep='\n')
+    print(*actions, sep="\n")
 
 
-def get_action(name: str) -> callable:
-    actions = {
-        'print':  print_dirs,
-        'remove': remove_dirs
-    }
+Action = Callable[[list[Path]], None]
+
+
+def get_action(name: str) -> Action:
+    actions = {"print": print_dirs, "remove": remove_dirs}
 
     return actions[name] if name in actions else print_dirs
 
 
 def parse_options() -> Namespace:
     parser = ArgumentParser()
-    parser.add_argument('-r', '--root-dir',
-                        type=Path, required=True,
-                        help='root directory ')
-    parser.add_argument('-f', '--empty-files',
-                        type=bool, default=False,
-                        help='treat empty files as absent.')
-    parser.add_argument('-a', '--action',
-                        type=str, default='print',
-                        help='action will be performed for each empty directory:\n'
-                             '\tprint (default)'
-                             '\tremove')
+    parser.add_argument("-r", "--root-dir", type=Path, required=True, help="root directory ")
+    parser.add_argument("-f", "--empty-files", type=bool, default=False, help="treat empty files as absent.")
+    parser.add_argument(
+        "-a",
+        "--action",
+        type=str,
+        default="print",
+        help="action will be performed for each empty directory:\n" "\tprint (default)" "\tremove",
+    )
 
     return parser.parse_args()
 
 
-def cli():
+def cli() -> None:
     options = parse_options()
 
     root_dir = options.root_dir.absolute()
