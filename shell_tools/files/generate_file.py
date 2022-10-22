@@ -50,7 +50,7 @@ def parse_options():
     return parser.parse_args()
 
 
-def main():
+def cli():
     options = parse_options()
 
     file_path = Path(options.file_path).absolute() if options.file_path else default_file_location()
@@ -65,7 +65,3 @@ def main():
         print(f'The file of {options.file_size} will be generated at "{file_path}".')
         generate_file(file_path, file_size, options.line_size)
         print('The generation is finished.')
-
-
-if __name__ == '__main__':
-    main()

@@ -1,6 +1,5 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
-from sys import exit
 
 
 def get_empty_directories(root_dir: Path, empty_files=False) -> list[Path]:
@@ -57,7 +56,7 @@ def parse_options() -> Namespace:
     return parser.parse_args()
 
 
-def main():
+def cli():
     options = parse_options()
 
     root_dir = options.root_dir.absolute()
@@ -67,7 +66,3 @@ def main():
     empty_dirs = get_empty_directories(root_dir, options.empty_files)
     action = get_action(options.action)
     action(empty_dirs)
-
-
-if __name__ == '__main__':
-    exit(main())
