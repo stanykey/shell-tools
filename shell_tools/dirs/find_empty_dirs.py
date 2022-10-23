@@ -61,18 +61,19 @@ def get_dirs_processor(name: str) -> Processor:
 def find_empty_dirs(root_dir: Path, ignore_empty_files: bool = False) -> list[Path]:
     result = []
 
-    dirs = [path for path in root_dir.iterdir() if path.is_dir()]
+    items = tuple(path for path in root_dir.iterdir())
+    dirs = tuple(filter(lambda path: path.is_dir(), items))
     if not dirs:
-        files = [path for path in root_dir.iterdir() if path.is_file()]
+        files = tuple(filter(lambda path: path.is_file(), items))
         if not files:
             result.append(root_dir)
         elif ignore_empty_files:
-            files_size = sum(file.stat().st_size for file in files)
-            if not files_size:
+            non_empty = any(file.stat().st_size > 0 for file in files)
+            if not non_empty:
                 result.append(root_dir)
 
-    for child in dirs:
-        result.extend(find_empty_dirs(child, ignore_empty_files))
+    for child_dir in dirs:
+        result.extend(find_empty_dirs(child_dir, ignore_empty_files))
 
     return result
 
