@@ -49,8 +49,9 @@ def print_dirs(dirs: list[Path]) -> None:
 
 @dirs_processor(name="remove")
 def remove_dirs(dirs: list[Path]) -> None:
-    actions = [f'remove "{path}"' for path in dirs]
-    print(*actions, sep="\n")
+    for path in dirs:
+        print(f"removing '{path}'")
+        path.rmdir()
 
 
 def get_dirs_processor(name: str) -> Processor:
