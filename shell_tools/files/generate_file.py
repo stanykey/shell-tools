@@ -38,7 +38,7 @@ def determine_file_size(size_string: str) -> int:
 
 
 def default_file_location() -> Path:
-    return Path("generated-file.txt").absolute()
+    return Path("generated-file.txt")
 
 
 def get_program_name() -> str:
@@ -46,9 +46,9 @@ def get_program_name() -> str:
 
 
 @command()
-@option("--path", type=Path, default=default_file_location(), help="Location for generated file.")
-@option("--size", type=str, default="10mb", help="Required file size in bytes (optional suffixes: kb, mb, gb).")
-@option("--line-size", type=int, default=64, help="Length of line/chunk.")
+@option("--path", type=Path, default=default_file_location(), help="Location for generated file.'", show_default=True)
+@option("--size", type=str, default="10mb", help="File size in bytes[kb|mb|gb].", show_default=True)
+@option("--line-size", type=int, default=64, help="Length of line/chunk.", show_default=True)
 def cli(path: Path, size: str, line_size: int) -> None:
     path = path.absolute()
     if path.is_dir():
