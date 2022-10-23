@@ -29,7 +29,7 @@ def generate_file(path: Path, size: int, line_length: int = 1024) -> None:
 def determine_file_size(size_string: str) -> int:
     multiplier = {"gb": 1024 * 1024 * 1024, "mb": 1024 * 1024, "kb": 1024}
 
-    result = search(r"(?P<number>^\d+\.?\d+)(?P<multiplier>gb|mb|kb$)?", size_string, IGNORECASE)
+    result = search(r"^(?P<number>\d+\.?\d*)(?P<multiplier>gb|mb|kb)?$", size_string, IGNORECASE)
     if result:
         number = float(result.group("number"))
         ratio = 1 if not result.group("multiplier") else multiplier[result.group("multiplier").lower()]
