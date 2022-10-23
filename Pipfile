@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 click = "*"
+build = "*"
+twine = "*"
 
 [dev-packages]
 pre-commit = "*"
