@@ -6,6 +6,7 @@ from string import ascii_uppercase
 from string import digits
 from sys import argv
 
+from click import argument
 from click import command
 from click import option
 
@@ -37,16 +38,12 @@ def determine_file_size(size_string: str) -> int:
     return 0
 
 
-def default_file_location() -> Path:
-    return Path("generated-file.txt")
-
-
 def get_program_name() -> str:
     return Path(argv[0]).stem
 
 
 @command()
-@option("--path", type=Path, default=default_file_location(), help="Location for generated file.'", show_default=True)
+@argument("path", type=Path)
 @option("--size", type=str, default="10mb", help="File size in bytes[kb|mb|gb].", show_default=True)
 @option("--line-size", type=int, default=64, help="Length of line/chunk.", show_default=True)
 def cli(path: Path, size: str, line_size: int) -> None:

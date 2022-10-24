@@ -2,6 +2,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from click import argument
 from click import command
 from click import option
 
@@ -80,7 +81,7 @@ def find_empty_dirs(root_dir: Path, ignore_empty_files: bool = False) -> list[Pa
 
 
 @command()
-@option("--root-dir", type=Path, required=True, help="Root directory.")
+@argument("root-dir", type=Path)
 @option("--ignore-empty-files", type=bool, default=False, help="Treat empty files as absent.")
 @option(
     "--action",
