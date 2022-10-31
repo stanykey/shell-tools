@@ -3,7 +3,9 @@ from pathlib import Path
 from subprocess import PIPE
 from subprocess import Popen
 
-import click
+from click import argument
+from click import command
+from click import option
 
 
 def gather_repos(root_dir: Path, recursive: bool = False) -> tuple[Path, ...]:
@@ -17,9 +19,9 @@ def update_repo(repo: Path) -> list[str]:
     return stdout.decode("utf-8").strip().split("\n")
 
 
-@click.command()
-@click.option("--root-dir", type=Path, default=Path.cwd(), help="repos root dir", show_default=True)
-@click.option("--recursive", is_flag=True, help="search git repos recursively")
+@command()
+@argument("root-dir", type=Path, default=Path.cwd(), help="Repos root dir")
+@option("-r", "--recursive", is_flag=True, help="Search git repos recursively")
 def cli(root_dir: Path, recursive: bool) -> None:
     root_dir = root_dir.absolute()
     suffix = "recursively " if recursive else ""
@@ -27,7 +29,7 @@ def cli(root_dir: Path, recursive: bool) -> None:
 
     repos = gather_repos(root_dir, recursive)
     for repo in repos:
-        # update_repo(repo)
+        update_repo(repo)
         print(f"{repo.relative_to(root_dir)} was synced")
 
     input("Press Enter to exit...")
