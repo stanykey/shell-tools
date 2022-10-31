@@ -81,21 +81,16 @@ def find_empty_dirs(root_dir: Path, ignore_empty_files: bool = False) -> list[Pa
 
 
 @command()
-@argument("root-dir", type=Path)
-@option("--ignore-empty-files", type=bool, default=False, help="Treat empty files as absent.")
-@option(
-    "--action",
-    type=str,
-    default="print",
-    help="Action will be performed for each empty directory:\n" "\tprint (default)" "\tremove",
-)
-def cli(root_dir: Path, ignore_empty_files: bool, action: str) -> None:
+@argument("root-dir", type=Path, default=Path.cwd())
+@option("--ignore-empty-files", is_flag=True, help="Treat empty files as absent.")
+@option("--remove/--no-remove", is_flag=True, help="Indicate remove or not empty dirs")
+def cli(root_dir: Path, ignore_empty_files: bool, remove: bool) -> None:
     root_dir = root_dir.absolute()
     if not root_dir.exists():
         print("The root directory is not set or doesn't exists.")
 
     empty_dirs = find_empty_dirs(root_dir, ignore_empty_files)
-    processor = get_dirs_processor(action)
+    processor = get_dirs_processor("remove" if remove else "print")
     processor(empty_dirs)
 
 
