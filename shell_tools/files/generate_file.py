@@ -66,3 +66,7 @@ def cli(path: Path, size: str, line_size: int) -> None:
     print(f"The file of {size} will be generated at '{path}'.")
     generate_file(path, file_size, line_size)
     print("The generation is finished.")
+
+
+if __name__ == "__main__":
+    cli()

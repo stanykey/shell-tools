@@ -97,3 +97,7 @@ def cli(root_dir: Path, ignore_empty_files: bool, action: str) -> None:
     empty_dirs = find_empty_dirs(root_dir, ignore_empty_files)
     processor = get_dirs_processor(action)
     processor(empty_dirs)
+
+
+if __name__ == "__main__":
+    cli()
