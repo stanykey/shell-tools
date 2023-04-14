@@ -1,4 +1,4 @@
-from pathlib import Path
+from os import PathLike
 from random import choice
 from string import ascii_uppercase
 from string import digits
@@ -22,7 +22,7 @@ def write_random_data(io: TextIO, size: int, chunk_size: int = 1024) -> None:
         io.write(generated_line)
 
 
-def make_random_file(path: Path, size: int, line_length: int = 1024) -> None:
+def make_random_file(path: str | PathLike[str], size: int, line_length: int = 1024) -> None:
     """Write random data to the `file` in the amount equal to `size`."""
     with open(path, "w") as file:
         write_random_data(file, size, line_length)

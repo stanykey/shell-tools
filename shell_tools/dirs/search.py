@@ -1,10 +1,14 @@
+from os import PathLike
 from pathlib import Path
 
 
-def find_empty_dirs(root: Path, ignore_empty_files: bool = False) -> list[Path]:
+def find_empty_dirs(root: str | PathLike[str], ignore_empty_files: bool = False) -> list[Path]:
     """Find all empty dirs recursively from given `root` directory."""
-    result = []
+    root = Path(root)
+    if not root.is_dir():
+        return list()
 
+    result = []
     items = [path for path in root.iterdir()]
     dirs = [path for path in items if path.is_dir()]
     if not dirs:
