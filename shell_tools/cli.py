@@ -12,8 +12,8 @@ from click import option
 
 from shell_tools.dirs.search import find_empty_dirs
 from shell_tools.files.random import make_random_file
-from shell_tools.git.sync_repos import gather_repos
-from shell_tools.git.sync_repos import update_repo
+from shell_tools.git.misc import find_repositories
+from shell_tools.git.misc import update_repository
 
 
 def determine_file_size(size_string: str) -> int:
@@ -133,9 +133,9 @@ def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
     suffix = "recursively " if recursive else ""
     print(f"Scanning '{root_dir}' for git repositories {suffix}...")
 
-    repos = gather_repos(root_dir, recursive)
+    repos = find_repositories(root_dir, recursive)
     for repo in repos:
-        update_repo(repo, submodules)
+        update_repository(repo, submodules)
         print(f"{repo.relative_to(root_dir)} was synced")
 
     input("Press Enter to exit...")
