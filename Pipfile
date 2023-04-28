@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-click = "*"
 build = "*"
 twine = "*"
+click = "*"
 
 [dev-packages]
 pre-commit = "*"
