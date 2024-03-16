@@ -1,4 +1,5 @@
 """Contain set of CLI applications."""
+
 from collections.abc import Callable
 from pathlib import Path
 from re import IGNORECASE

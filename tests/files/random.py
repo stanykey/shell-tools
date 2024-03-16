@@ -5,8 +5,8 @@ from itertools import starmap
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
-from unittest import main
 from unittest import TestCase
+from unittest import main
 
 from shell_tools.files.random import make_random_file
 from shell_tools.files.random import make_trash_string

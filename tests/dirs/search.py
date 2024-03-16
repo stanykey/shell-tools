@@ -1,7 +1,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest import main
 from unittest import TestCase
+from unittest import main
 
 from shell_tools.dirs.search import find_empty_dirs
 
