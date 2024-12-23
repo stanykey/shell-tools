@@ -1,10 +1,61 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
-force_single_line = "true"
+[tool.poetry]
+name = "shell-tools"
+version = "1.2.0"
+description = "Set of Python applications/scripts for different purposes"
+readme = "README.md"
+license = "MIT"
+authors = ["Sergii Lovygin <lovygin.dev@gmail.com>"]
+homepage = "https://github.com/stanykey/shell-tools"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+click = "*"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "*"
+ruff = "*"
+mypy = "*"
+
+[tool.poetry.scripts]
+generate-file = "shell_tools.cli:generate_file"
+find-empty-dirs = "shell_tools.cli:discover_empty_dirs"
+sync-repos = "shell_tools.cli:sync_repos"
+
+[tool.ruff]
+fix = true
+line-length = 120
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = true
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B"]
+extend-select = ["I"]
+ignore = ["E501"]
+unfixable = ["B"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402"]
 
 [tool.mypy]
 show_error_codes = true
