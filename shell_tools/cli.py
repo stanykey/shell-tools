@@ -93,6 +93,7 @@ def get_dirs_processor(name: str) -> Processor:
 @option("--size", type=str, default="10mb", help="File size in bytes[kb|mb|gb].", show_default=True)
 @option("--line-size", type=int, default=64, help="Length of line/chunk.", show_default=True)
 def generate_file(path: Path, size: str, line_size: int) -> None:
+    """Generate files with random `trash` data."""
     path = path.absolute()
     if path.is_dir():
         print(f"Script aborted: '{path}' exists and it's directory")
@@ -119,6 +120,7 @@ def generate_file(path: Path, size: str, line_size: int) -> None:
 @option("--ignore-empty-files", is_flag=True, help="Treat empty files as absent.")
 @option("--remove/--no-remove", is_flag=True, help="Indicate remove or not empty dirs")
 def discover_empty_dirs(root_dir: Path, ignore_empty_files: bool, remove: bool) -> None:
+    """Find empty directories."""
     root_dir = root_dir.absolute()
     if not root_dir.exists():
         print("The root directory is not set or doesn't exists.")
@@ -133,6 +135,7 @@ def discover_empty_dirs(root_dir: Path, ignore_empty_files: bool, remove: bool) 
 @option("-r", "--recursive", is_flag=True, help="Search git repos recursively")
 @option("--submodules/--no-submodules", is_flag=True, help="Update or not submodules")
 def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
+    """Find repositories in <root-dir> and update them (pull changes from remote)."""
     root_dir = root_dir.absolute()
     suffix = "recursively " if recursive else ""
     print(f"Scanning '{root_dir}' for git repositories {suffix}...")
@@ -147,6 +150,8 @@ def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
 
 @command(options_metavar="")
 def edit_nvim_config() -> None:
+    """Shortcut to edit nvim config."""
+
     def get_nvim_config_directory() -> Path:
         path = Path("~/AppData/Local/nvim" if system() == "Windows" else "~/.config/nvim").expanduser()
         path.mkdir(parents=True, exist_ok=True)
