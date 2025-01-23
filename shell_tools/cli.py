@@ -1,9 +1,12 @@
 """Contain set of CLI applications."""
 
 from collections.abc import Callable
+from os import chdir
 from pathlib import Path
+from platform import system
 from re import IGNORECASE
 from re import search
+from subprocess import Popen
 from sys import argv
 from typing import Any
 
@@ -140,3 +143,22 @@ def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
         print(f"{repo.relative_to(root_dir)} was synced")
 
     input("Press Enter to exit...")
+
+
+@command(options_metavar="")
+def edit_nvim_config() -> None:
+    def get_nvim_config_directory() -> Path:
+        path = Path("~/AppData/Local/nvim" if system() == "Windows" else "~/.config/nvim").expanduser()
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
+    working_directory = Path.cwd()
+    try:
+        config_dir = get_nvim_config_directory()
+        chdir(config_dir)
+
+        arguments = ["nvim", str(config_dir)]
+        with Popen(arguments) as nvim:
+            nvim.wait()
+    finally:
+        chdir(working_directory)

@@ -29,6 +29,7 @@ mypy = "1.14.1"
 generate-file = "shell_tools.cli:generate_file"
 find-empty-dirs = "shell_tools.cli:discover_empty_dirs"
 sync-repos = "shell_tools.cli:sync_repos"
+edit-nvim-config = "shell_tools.cli:edit_nvim_config"
 
 [tool.ruff]
 fix = true
