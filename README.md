@@ -7,3 +7,4 @@ The package contains a set of small CLIs for different purposes.
 - **find-empty-dir**: allowing find empty dirs and apply some actions
 - **sync-repos**: allowing to sync multiple repositories at once
 - **edit-nvim-config**: open `nvim` config dir for edit with `nvim`
+- **pretty-date**: print timestamp in human-readable format

@@ -173,8 +173,14 @@ def edit_nvim_config() -> None:
 
 @command(options_metavar="")
 @argument("timestamp", type=float)
-@option("-f", "--date-format", type=str, default="%d-%b-%Y %H:%M:%S", help="Output date format.")
+@option(
+    "-f",
+    "--date-format",
+    type=str,
+    default="%d-%b-%Y %H:%M:%S",
+    help="Output date format. Standard C format codes (e.g., %Y, %m, %d, %H, %M, %S) are supported.",
+)
 def pretty_date(timestamp: float, date_format: str) -> None:
-    """Print timestamp in human readable format."""
+    """Print timestamp in human-readable format."""
     time = datetime.fromtimestamp(timestamp / 1000)
     echo(time.strftime(date_format))
