@@ -172,7 +172,7 @@ def edit_nvim_config() -> None:
 
 
 @command(options_metavar="")
-@argument("timestamp", type=float)
+@argument("timestamp", type=float, required=False)
 @option(
     "-f",
     "--date-format",
@@ -180,7 +180,17 @@ def edit_nvim_config() -> None:
     default="%d-%b-%Y %H:%M:%S",
     help="Output date format. Standard C format codes (e.g., %Y, %m, %d, %H, %M, %S) are supported.",
 )
-def pretty_date(timestamp: float, date_format: str) -> None:
+def pretty_date(timestamp: float | None, date_format: str) -> None:
     """Print timestamp in human-readable format."""
-    time = datetime.fromtimestamp(timestamp / 1000)
-    echo(time.strftime(date_format))
+    try:
+        if timestamp is None:
+            timestamp = datetime.now().timestamp() * 1000  # Default to current time in ms
+        time = datetime.fromtimestamp(timestamp / 1000)  # Python timestamp in secs, unlike Unix in ms
+
+        echo(time.strftime(date_format))
+    except ValueError as ex:
+        echo(f"Error: {ex}", err=True)
+        exit(1)
+    except (OverflowError, OSError):
+        echo("Error: invalid timestamp value", err=True)
+        exit(1)
