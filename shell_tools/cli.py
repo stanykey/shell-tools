@@ -1,6 +1,7 @@
 """Contain set of CLI applications."""
 
 from collections.abc import Callable
+from datetime import datetime
 from os import chdir
 from pathlib import Path
 from platform import system
@@ -168,3 +169,12 @@ def edit_nvim_config() -> None:
             nvim.wait()
     finally:
         chdir(working_directory)
+
+
+@command(options_metavar="")
+@argument("timestamp", type=float)
+@option("-f", "--date-format", type=str, default="%d-%b-%Y %H:%M:%S", help="Output date format.")
+def pretty_date(timestamp: float, date_format: str) -> None:
+    """Print timestamp in human readable format."""
+    time = datetime.fromtimestamp(timestamp / 1000)
+    echo(time.strftime(date_format))
