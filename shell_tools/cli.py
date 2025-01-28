@@ -12,6 +12,7 @@ from typing import Any
 
 from click import argument
 from click import command
+from click import echo
 from click import option
 
 from shell_tools.dirs.search import find_empty_dirs
@@ -73,13 +74,13 @@ def dirs_processor(name: str) -> Callable[[Processor], Processor]:
 
 @dirs_processor(name="print")
 def print_dirs(dirs: list[Path]) -> None:
-    print(*dirs, sep="\n")
+    echo(*dirs, sep="\n")
 
 
 @dirs_processor(name="remove")
 def remove_dirs(dirs: list[Path]) -> None:
     for path in dirs:
-        print(f"removing '{path}'")
+        echo(f"removing '{path}'")
         path.rmdir()
 
 
@@ -96,7 +97,7 @@ def generate_file(path: Path, size: str, line_size: int) -> None:
     """Generate files with random `trash` data."""
     path = path.absolute()
     if path.is_dir():
-        print(f"Script aborted: '{path}' exists and it's directory")
+        echo(f"Script aborted: '{path}' exists and it's directory")
         return
 
     if path.is_file():
@@ -106,13 +107,13 @@ def generate_file(path: Path, size: str, line_size: int) -> None:
 
     file_size = determine_file_size(size)
     if not file_size:
-        print(f"Invalid file size was requested (file-size={size}).")
-        print(f"Use '{get_program_name()} --help' to see allowed options.")
+        echo(f"Invalid file size was requested (file-size={size}).")
+        echo(f"Use '{get_program_name()} --help' to see allowed options.")
         return
 
-    print(f"The file of {size} will be generated at '{path}'.")
+    echo(f"The file of {size} will be generated at '{path}'.")
     make_random_file(path, file_size, line_size)
-    print("The generation is finished.")
+    echo("The generation is finished.")
 
 
 @command()
@@ -123,7 +124,7 @@ def discover_empty_dirs(root_dir: Path, ignore_empty_files: bool, remove: bool) 
     """Find empty directories."""
     root_dir = root_dir.absolute()
     if not root_dir.exists():
-        print("The root directory is not set or doesn't exists.")
+        echo("The root directory is not set or doesn't exists.")
 
     empty_dirs = find_empty_dirs(root_dir, ignore_empty_files)
     processor = get_dirs_processor("remove" if remove else "print")
@@ -138,12 +139,12 @@ def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
     """Find repositories in <root-dir> and update them (pull changes from remote)."""
     root_dir = root_dir.absolute()
     suffix = "recursively " if recursive else ""
-    print(f"Scanning '{root_dir}' for git repositories {suffix}...")
+    echo(f"Scanning '{root_dir}' for git repositories {suffix}...")
 
     repos = find_repositories(root_dir, recursive)
     for repo in repos:
         update_repository(repo, submodules)
-        print(f"{repo.relative_to(root_dir)} was synced")
+        echo(f"{repo.relative_to(root_dir)} was synced")
 
     input("Press Enter to exit...")
 
