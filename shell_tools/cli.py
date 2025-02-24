@@ -2,12 +2,14 @@
 
 from collections.abc import Callable
 from datetime import datetime
+from json import loads as json_from_str
 from os import chdir
 from pathlib import Path
 from platform import system
 from re import IGNORECASE
 from re import search
 from subprocess import Popen
+from subprocess import run
 from sys import argv
 from typing import Any
 
@@ -194,3 +196,24 @@ def pretty_date(timestamp: float | None, date_format: str) -> None:
     except (OverflowError, OSError):
         echo("Error: invalid timestamp value", err=True)
         exit(1)
+
+
+@command(options_metavar="")
+@option("--all/--outdated", is_flag=True, help="List only outdated packages.", default=True, show_default=True)
+def update_python_packages(all: bool) -> None:
+    """Update python packages in the environment."""
+    options = ["pip", "list", "--format=json", "--disable-pip-version-check"]
+    if not all:
+        options.append("--outdated")
+
+    pip_output = run(options, capture_output=True, text=True, check=True).stdout
+
+    packages = json_from_str(pip_output)
+    if not packages:
+        echo("All packages are up-to-date!")
+        return
+
+    for package in packages:
+        package_name = package["name"]
+        echo(f"Upgrading {package_name}...")
+        run(["pip", "install", "--upgrade", package_name], check=True)

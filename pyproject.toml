@@ -31,6 +31,7 @@ find-empty-dirs = "shell_tools.cli:discover_empty_dirs"
 sync-repos = "shell_tools.cli:sync_repos"
 edit-nvim-config = "shell_tools.cli:edit_nvim_config"
 pretty-date = "shell_tools.cli:pretty_date"
+update-python-packages = "shell_tools.cli:update_python_packages"
 
 [tool.ruff]
 fix = true

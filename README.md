@@ -8,3 +8,4 @@ The package contains a set of small CLIs for different purposes.
 - **sync-repos**: allowing to sync multiple repositories at once
 - **edit-nvim-config**: open `nvim` config dir for edit with `nvim`
 - **pretty-date**: print timestamp in human-readable format
+- **update-python-packages**: update python packages in the environment
