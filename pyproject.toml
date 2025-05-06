@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "shell-tools"
-version = "1.2.4"
+version = "1.2.5"
 description = "Set of Python applications/scripts for different purposes"
 readme = "README.md"
 license = "MIT"
