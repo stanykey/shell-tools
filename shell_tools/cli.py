@@ -202,6 +202,10 @@ def pretty_date(timestamp: float | None, date_format: str) -> None:
 @option("--all/--outdated", is_flag=True, help="List only outdated packages.", default=True, show_default=True)
 def update_python_packages(all: bool) -> None:
     """Update python packages in the environment."""
+    if system() != "Windows":
+        echo("This command only works on Windows yet.", err=True)
+        return
+
     options = ["pip", "list", "--format=json", "--disable-pip-version-check"]
     if not all:
         options.append("--outdated")
