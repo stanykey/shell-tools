@@ -220,4 +220,7 @@ def update_python_packages(all: bool) -> None:
     for package in packages:
         package_name = package["name"]
         echo(f"Upgrading {package_name}...")
-        run(["pip", "install", "--upgrade", package_name], check=True)
+        if package_name == "pip":
+            run(["python", "-m", "pip", "install", "--upgrade", "pip"], check=True)
+        else:
+            run(["pip", "install", "--upgrade", package_name], check=True)
