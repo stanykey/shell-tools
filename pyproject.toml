@@ -1,14 +1,10 @@
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
+[project]
 name = "shell-tools"
 version = "1.2.5"
 description = "Set of Python applications/scripts for different purposes"
 readme = "README.md"
 license = "MIT"
-authors = ["Sergii Lovygin <lovygin.dev@gmail.com>"]
+authors = [{ name = "Sergii Lovygin", email = "lovygin.dev@gmail.com" }]
 homepage = "https://github.com/stanykey/shell-tools"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -16,16 +12,19 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.12"
-click = "8.1.8"
+requires-python = ">=3.14"
+dependencies = [
+    "click"
+]
 
-[poetry.group.dev.dependencies]
-pre-commit = "4.1.0"
-ruff = "0.9.2"
-mypy = "1.14.1"
+[dependency-groups]
+dev = [
+    "mypy",
+    "pre-commit",
+    "ruff",
+]
 
-[tool.poetry.scripts]
+[project.scripts]
 generate-file = "shell_tools.cli:generate_file"
 find-empty-dirs = "shell_tools.cli:discover_empty_dirs"
 sync-repos = "shell_tools.cli:sync_repos"
@@ -33,11 +32,14 @@ edit-nvim-config = "shell_tools.cli:edit_nvim_config"
 pretty-date = "shell_tools.cli:pretty_date"
 update-python-packages = "shell_tools.cli:update_python_packages"
 
+[tool.uv.build-backend]
+module-root = ""
+
 [tool.ruff]
 fix = true
 line-length = 120
 indent-width = 4
-target-version = "py312"
+target-version = "py314"
 
 [tool.ruff.format]
 quote-style = "double"
@@ -65,3 +67,8 @@ show_error_codes = true
 check_untyped_defs = true
 warn_unused_ignores = true
 warn_redundant_casts = true
+mypy_path = ["src"]
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
