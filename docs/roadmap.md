@@ -17,10 +17,10 @@ This list focuses on fixes and reliability improvements that are currently neede
   - Replace direct `pip` calls with `python -m pip` in `update-python-packages`.
 - [ ] Improve command output UX for `sync-repos`.
   - Show failed repos separately and summarize updated/skipped/failed counts.
-- [ ] Add tests for CLI command behavior and exit codes.
-  - Existing tests cover helper modules but not command wiring.
+- [x] Add tests for CLI command behavior and exit codes.
+  - Added baseline command coverage in `tests/cli.py` for `discover_empty_dirs`, `generate_file`, `pretty_date`, and `sync_repos`.
 
 ## Low Priority
 
-- [ ] Align documentation and CLI naming consistently (`find-empty-dirs`).
-- [ ] Improve wording and grammar in user-facing messages.
+- [x] Align documentation and CLI naming consistently (`find-empty-dirs`).
+- [x] Improve wording and grammar in user-facing messages.

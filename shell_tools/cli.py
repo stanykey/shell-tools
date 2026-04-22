@@ -85,7 +85,7 @@ def print_dirs(dirs: list[Path]) -> None:
 @dirs_processor(name="remove")
 def remove_dirs(dirs: list[Path]) -> None:
     for path in dirs:
-        echo(f"removing '{path}'")
+        echo(f"Removing '{path}'")
         path.rmdir()
 
 
@@ -102,29 +102,29 @@ def generate_file(path: Path, size: str, line_size: int) -> None:
     """Generate files with random `trash` data."""
     path = path.absolute()
     if path.is_dir():
-        echo(f"Script aborted: '{path}' exists and it's directory")
+        echo(f"Aborted: '{path}' already exists and is a directory.")
         return
 
     if path.is_file():
-        answer = input(f"file '{path}' already exists. override? [yes/no]: ")
+        answer = input(f"File '{path}' already exists. Overwrite? [yes/no]: ")
         if not answer.lower().startswith("y"):
             return
 
     file_size = determine_file_size(size)
     if not file_size:
-        echo(f"Invalid file size was requested (file-size={size}).")
-        echo(f"Use '{get_program_name()} --help' to see allowed options.")
+        echo(f"Invalid file size (size={size}).")
+        echo(f"Run '{get_program_name()} --help' to see supported options.")
         return
 
-    echo(f"The file of {size} will be generated at '{path}'.")
+    echo(f"Generating a {size} file at '{path}'.")
     make_random_file(path, file_size, line_size)
-    echo("The generation is finished.")
+    echo("File generation finished.")
 
 
 @command()
 @argument("root-dir", type=Path, default=Path.cwd())
 @option("--ignore-empty-files", is_flag=True, help="Treat empty files as absent.")
-@option("--remove/--no-remove", is_flag=True, help="Indicate remove or not empty dirs")
+@option("--remove/--no-remove", is_flag=True, help="Remove empty directories.")
 def discover_empty_dirs(root_dir: Path, ignore_empty_files: bool, remove: bool) -> None:
     """Find empty directories."""
     root_dir = root_dir.absolute()
@@ -139,7 +139,7 @@ def discover_empty_dirs(root_dir: Path, ignore_empty_files: bool, remove: bool) 
 @command()
 @argument("root-dir", type=Path, default=Path.cwd())
 @option("-r", "--recursive", is_flag=True, help="Search git repos recursively")
-@option("--submodules/--no-submodules", is_flag=True, help="Update or not submodules")
+@option("--submodules/--no-submodules", is_flag=True, help="Update submodules after pull.")
 def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
     """Find repositories in <root-dir> and update them (pull changes from remote)."""
     root_dir = root_dir.absolute()
@@ -149,7 +149,7 @@ def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
     repos = find_repositories(root_dir, recursive)
     for repo in repos:
         update_repository(repo, submodules)
-        echo(f"{repo.relative_to(root_dir)} was synced")
+        echo(f"Synced: {repo.relative_to(root_dir)}")
 
     input("Press Enter to exit...")
 
@@ -200,7 +200,7 @@ def pretty_date(timestamp: float | None, date_format: str) -> None:
         echo(f"Error: {ex}", err=True)
         exit(1)
     except OverflowError, OSError:
-        echo("Error: invalid timestamp value", err=True)
+        echo("Error: invalid timestamp.", err=True)
         exit(1)
 
 
@@ -209,7 +209,7 @@ def pretty_date(timestamp: float | None, date_format: str) -> None:
 def update_python_packages(all: bool) -> None:
     """Update python packages in the environment."""
     if system() != "Windows":
-        echo("This command only works on Windows yet.", err=True)
+        echo("This command is supported only on Windows.", err=True)
         return
 
     options = ["pip", "list", "--format=json", "--disable-pip-version-check"]
