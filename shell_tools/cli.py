@@ -77,7 +77,8 @@ def dirs_processor(name: str) -> Callable[[Processor], Processor]:
 
 @dirs_processor(name="print")
 def print_dirs(dirs: list[Path]) -> None:
-    echo(*dirs, sep="\n")
+    for path in dirs:
+        echo(str(path))
 
 
 @dirs_processor(name="remove")
@@ -193,7 +194,7 @@ def pretty_date(timestamp: float | None, date_format: str) -> None:
     except ValueError as ex:
         echo(f"Error: {ex}", err=True)
         exit(1)
-    except (OverflowError, OSError):
+    except OverflowError, OSError:
         echo("Error: invalid timestamp value", err=True)
         exit(1)
 
