@@ -1,4 +1,4 @@
-"""Contain set of CLI applications."""
+"""Contain a set of CLI applications."""
 
 from collections.abc import Callable
 from datetime import datetime
@@ -13,6 +13,7 @@ from subprocess import run
 from sys import argv
 from typing import Any
 
+from click import ClickException
 from click import argument
 from click import command
 from click import echo
@@ -127,8 +128,8 @@ def generate_file(path: Path, size: str, line_size: int) -> None:
 def discover_empty_dirs(root_dir: Path, ignore_empty_files: bool, remove: bool) -> None:
     """Find empty directories."""
     root_dir = root_dir.absolute()
-    if not root_dir.exists():
-        echo("The root directory is not set or doesn't exists.")
+    if not root_dir.is_dir():
+        raise ClickException(f"Root directory '{root_dir}' does not exist or is not a directory.")
 
     empty_dirs = find_empty_dirs(root_dir, ignore_empty_files)
     processor = get_dirs_processor("remove" if remove else "print")
@@ -185,10 +186,14 @@ def edit_nvim_config() -> None:
 )
 def pretty_date(timestamp: float | None, date_format: str) -> None:
     """Print timestamp in human-readable format."""
+
+    def get_timestamp() -> float:
+        if timestamp is not None:
+            return timestamp
+        return datetime.now().timestamp() * 1000  # Default to current time in ms
+
     try:
-        if timestamp is None:
-            timestamp = datetime.now().timestamp() * 1000  # Default to current time in ms
-        time = datetime.fromtimestamp(timestamp / 1000)  # Python timestamp in secs, unlike Unix in ms
+        time = datetime.fromtimestamp(get_timestamp() / 1000)  # Python timestamp in secs, unlike Unix in ms
 
         echo(time.strftime(date_format))
     except ValueError as ex:
