@@ -13,7 +13,7 @@ This list focuses on fixes and reliability improvements that are currently neede
 
 ## Medium Priority
 
-- [ ] Make package updates use the active interpreter consistently.
+- [x] Make package updates use the active interpreter consistently.
   - Replace direct `pip` calls with `python -m pip` in `update-python-packages`.
 - [ ] Improve command output UX for `sync-repos`.
   - Show failed repos separately and summarize updated/skipped/failed counts.

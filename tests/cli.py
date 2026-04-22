@@ -1,5 +1,6 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 from unittest import TestCase
 from unittest import main
 from unittest.mock import patch
@@ -10,6 +11,7 @@ from shell_tools.cli import discover_empty_dirs
 from shell_tools.cli import generate_file
 from shell_tools.cli import pretty_date
 from shell_tools.cli import sync_repos
+from shell_tools.cli import update_python_packages
 
 
 class CliTestCase(TestCase):
@@ -97,6 +99,31 @@ class CliTestCase(TestCase):
             self.assertEqual(0, result.exit_code)
             self.assertIn("Synced: repo-one", result.output)
             self.assertIn("Synced: repo-two", result.output)
+
+    def test_update_python_packages_uses_active_interpreter(self) -> None:
+        with (
+            patch("shell_tools.cli.system", return_value="Windows"),
+            patch("shell_tools.cli.executable", "C:/Python/python.exe"),
+            patch(
+                "shell_tools.cli.run",
+                side_effect=[
+                    SimpleNamespace(stdout='[{"name":"pip"},{"name":"ruff"}]'),
+                    SimpleNamespace(stdout=""),
+                    SimpleNamespace(stdout=""),
+                ],
+            ) as run_mock,
+        ):
+            result = self.runner.invoke(update_python_packages, ["--all"])
+
+        self.assertEqual(0, result.exit_code)
+        self.assertEqual(
+            [
+                ["C:/Python/python.exe", "-m", "pip", "list", "--format=json", "--disable-pip-version-check"],
+                ["C:/Python/python.exe", "-m", "pip", "install", "--upgrade", "pip"],
+                ["C:/Python/python.exe", "-m", "pip", "install", "--upgrade", "ruff"],
+            ],
+            [call.args[0] for call in run_mock.call_args_list],
+        )
 
 
 if __name__ == "__main__":

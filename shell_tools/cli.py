@@ -11,6 +11,7 @@ from re import search
 from subprocess import Popen
 from subprocess import run
 from sys import argv
+from sys import executable
 from typing import Any
 
 from click import ClickException
@@ -212,7 +213,7 @@ def update_python_packages(all: bool) -> None:
         echo("This command is supported only on Windows.", err=True)
         return
 
-    options = ["pip", "list", "--format=json", "--disable-pip-version-check"]
+    options = [executable, "-m", "pip", "list", "--format=json", "--disable-pip-version-check"]
     if not all:
         options.append("--outdated")
 
@@ -226,7 +227,4 @@ def update_python_packages(all: bool) -> None:
     for package in packages:
         package_name = package["name"]
         echo(f"Upgrading {package_name}...")
-        if package_name == "pip":
-            run(["python", "-m", "pip", "install", "--upgrade", "pip"], check=True)
-        else:
-            run(["pip", "install", "--upgrade", package_name], check=True)
+        run([executable, "-m", "pip", "install", "--upgrade", package_name], check=True)
