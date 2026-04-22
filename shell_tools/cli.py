@@ -8,6 +8,7 @@ from pathlib import Path
 from platform import system
 from re import IGNORECASE
 from re import search
+from subprocess import CalledProcessError
 from subprocess import Popen
 from subprocess import run
 from sys import argv
@@ -144,15 +145,32 @@ def discover_empty_dirs(root_dir: Path, ignore_empty_files: bool, remove: bool) 
 def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
     """Find repositories in <root-dir> and update them (pull changes from remote)."""
     root_dir = root_dir.absolute()
+    if not root_dir.is_dir():
+        raise ClickException(f"Root directory '{root_dir}' does not exist or is not a directory.")
+
     suffix = "recursively " if recursive else ""
     echo(f"Scanning '{root_dir}' for git repositories {suffix}...")
 
     repos = find_repositories(root_dir, recursive)
+    synced = 0
+    failed = 0
     for repo in repos:
-        update_repository(repo, submodules)
-        echo(f"Synced: {repo.relative_to(root_dir)}")
+        repo_name = repo.relative_to(root_dir)
+        try:
+            update_repository(repo, submodules)
+            synced += 1
+            echo(f"Synced: {repo_name}")
+        except CalledProcessError as error:
+            failed += 1
+            details = (error.stderr or error.stdout or "").strip()
+            if details:
+                echo(f"Failed: {repo_name}: {details}", err=True)
+            else:
+                echo(f"Failed: {repo_name}", err=True)
 
-    input("Press Enter to exit...")
+    echo(f"Finished: {synced} synced, {failed} failed.")
+    if failed:
+        raise ClickException(f"Failed to sync {failed} repositories.")
 
 
 @command(options_metavar="")

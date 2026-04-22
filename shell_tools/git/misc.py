@@ -1,7 +1,6 @@
 from os import PathLike
 from pathlib import Path
-from subprocess import PIPE
-from subprocess import Popen
+from subprocess import run
 
 
 def find_repositories(root: str | PathLike[str], recursive: bool = False) -> list[Path]:
@@ -20,9 +19,8 @@ def find_repositories(root: str | PathLike[str], recursive: bool = False) -> lis
 
 def execute_command(*arguments: str) -> list[str]:
     """Execute `arguments` as a single shell command."""
-    with Popen(arguments, stdout=PIPE) as shell:
-        stdout, _ = shell.communicate()
-        return stdout.decode("utf-8").strip().split("\n")
+    result = run(arguments, capture_output=True, text=True, check=True)
+    return result.stdout.strip().splitlines()
 
 
 def update_repository(path: str | PathLike[str], submodules: bool) -> list[str]:

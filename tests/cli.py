@@ -1,4 +1,5 @@
 from pathlib import Path
+from subprocess import CalledProcessError
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest import TestCase
@@ -94,11 +95,38 @@ class CliTestCase(TestCase):
                 patch("shell_tools.cli.find_repositories", return_value=[repo_one, repo_two]),
                 patch("shell_tools.cli.update_repository", return_value=[]),
             ):
-                result = self.runner.invoke(sync_repos, [str(root_dir)], input="\n")
+                result = self.runner.invoke(sync_repos, [str(root_dir)])
 
             self.assertEqual(0, result.exit_code)
             self.assertIn("Synced: repo-one", result.output)
             self.assertIn("Synced: repo-two", result.output)
+            self.assertIn("Finished: 2 synced, 0 failed.", result.output)
+
+    def test_sync_repos_returns_non_zero_when_repo_sync_fails(self) -> None:
+        with TemporaryDirectory() as root_dir_name:
+            root_dir = Path(root_dir_name)
+            repo_one = root_dir / "repo-one"
+            repo_two = root_dir / "repo-two"
+            repo_one.mkdir()
+            repo_two.mkdir()
+
+            with (
+                patch("shell_tools.cli.find_repositories", return_value=[repo_one, repo_two]),
+                patch(
+                    "shell_tools.cli.update_repository",
+                    side_effect=[
+                        [],
+                        CalledProcessError(returncode=1, cmd=["git"], output="", stderr="fatal: pull failed"),
+                    ],
+                ),
+            ):
+                result = self.runner.invoke(sync_repos, [str(root_dir)])
+
+            self.assertEqual(1, result.exit_code)
+            self.assertIn("Synced: repo-one", result.output)
+            self.assertIn("Failed: repo-two: fatal: pull failed", result.output)
+            self.assertIn("Finished: 1 synced, 1 failed.", result.output)
+            self.assertIn("Failed to sync 1 repositories.", result.output)
 
     def test_update_python_packages_uses_active_interpreter(self) -> None:
         with (
