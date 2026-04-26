@@ -8,3 +8,6 @@
 .ruff_cache
 __pycache__
 data
+
+# local stuff
+todo-list.md

@@ -14,4 +14,3 @@ Collection of small CLI utilities for local filesystem and developer workflows.
 ## Documentation
 
 - [Developer Guide](docs/dev.md)
-- [Roadmap](docs/roadmap.md)
