@@ -8,6 +8,19 @@ def find_empty_dirs(root: str | PathLike[str], ignore_empty_files: bool = False)
     if not start_directory.is_dir():
         return list()
 
+    return _find_empty_dirs(start_directory, ignore_empty_files, set())
+
+
+def _find_empty_dirs(start_directory: Path, ignore_empty_files: bool, visited: set[Path]) -> list[Path]:
+    try:
+        resolved = start_directory.resolve()
+    except OSError:
+        resolved = start_directory.absolute()
+
+    if resolved in visited:
+        return []
+    visited.add(resolved)
+
     result = []
     items = [path for path in start_directory.iterdir()]
     dirs = [path for path in items if path.is_dir()]
@@ -21,6 +34,8 @@ def find_empty_dirs(root: str | PathLike[str], ignore_empty_files: bool = False)
                 result.append(start_directory)
 
     for child_dir in dirs:
-        result.extend(find_empty_dirs(child_dir, ignore_empty_files))
+        if child_dir.is_symlink():
+            continue
+        result.extend(_find_empty_dirs(child_dir, ignore_empty_files, visited))
 
     return result
