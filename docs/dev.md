@@ -18,8 +18,11 @@ Examples:
 ```powershell
 uv run generate-file .\tmp.bin --size 1mb
 uv run find-empty-dirs .\tests --no-remove
+uv run sync-repos . --recursive
 uv run pretty-date
 ```
+
+`sync-repos` includes `root-dir` itself when it is a git repository; without `--recursive`, it scans only `root-dir` and its direct children.
 
 ## Quality Checks
 

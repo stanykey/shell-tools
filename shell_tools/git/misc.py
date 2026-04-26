@@ -14,7 +14,22 @@ def find_repositories(root: str | PathLike[str], recursive: bool = False) -> lis
         return list()
 
     pattern = r"**/.git" if recursive else r"*/.git"
-    return [folder.parent for folder in start_directory.glob(pattern)]
+    markers = list(start_directory.glob(pattern))
+
+    root_marker = start_directory / ".git"
+    if root_marker.exists():
+        markers.insert(0, root_marker)
+
+    repositories: list[Path] = []
+    seen: set[Path] = set()
+    for marker in markers:
+        repository = marker.parent
+        if repository in seen:
+            continue
+        repositories.append(repository)
+        seen.add(repository)
+
+    return repositories
 
 
 def execute_command(*arguments: str) -> list[str]:
