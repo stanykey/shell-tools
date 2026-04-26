@@ -161,6 +161,20 @@ class CliTestCase(TestCase):
             self.assertIn("Finished: 1 synced, 1 failed.", result.output)
             self.assertIn("Failed to sync 1 repositories.", result.output)
 
+    def test_sync_repos_prints_root_label_for_root_repository(self) -> None:
+        with TemporaryDirectory() as root_dir_name:
+            root_dir = Path(root_dir_name)
+
+            with (
+                patch("shell_tools.cli.find_repositories", return_value=[root_dir]),
+                patch("shell_tools.cli.update_repository", return_value=[]),
+            ):
+                result = self.runner.invoke(sync_repos, [str(root_dir)])
+
+            self.assertEqual(0, result.exit_code)
+            self.assertIn("Synced: <root>", result.output)
+            self.assertIn("Finished: 1 synced, 0 failed.", result.output)
+
     def test_update_python_packages_uses_active_interpreter(self) -> None:
         with (
             patch("shell_tools.cli.system", return_value="Windows"),

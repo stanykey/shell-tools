@@ -166,7 +166,8 @@ def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
     synced = 0
     failed = 0
     for repo in repos:
-        repo_name = repo.relative_to(root_dir)
+        repo_relative_path = repo.relative_to(root_dir)
+        repo_name = "<root>" if repo_relative_path == Path(".") else str(repo_relative_path)
         try:
             update_repository(repo, submodules)
             synced += 1
