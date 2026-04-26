@@ -173,6 +173,34 @@ class CliTestCase(TestCase):
             [call.args[0] for call in run_mock.call_args_list],
         )
 
+    def test_update_python_packages_outdated_flag_requests_outdated_only(self) -> None:
+        with (
+            patch("shell_tools.cli.system", return_value="Windows"),
+            patch("shell_tools.cli.executable", "C:/Python/python.exe"),
+            patch(
+                "shell_tools.cli.run",
+                side_effect=[SimpleNamespace(stdout='[{"name":"setuptools"}]'), SimpleNamespace(stdout="")],
+            ) as run_mock,
+        ):
+            result = self.runner.invoke(update_python_packages, ["--outdated"])
+
+        self.assertEqual(0, result.exit_code)
+        self.assertEqual(
+            [
+                [
+                    "C:/Python/python.exe",
+                    "-m",
+                    "pip",
+                    "list",
+                    "--format=json",
+                    "--disable-pip-version-check",
+                    "--outdated",
+                ],
+                ["C:/Python/python.exe", "-m", "pip", "install", "--upgrade", "setuptools"],
+            ],
+            [call.args[0] for call in run_mock.call_args_list],
+        )
+
 
 if __name__ == "__main__":
     main()

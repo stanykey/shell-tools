@@ -229,7 +229,13 @@ def pretty_date(timestamp: float | None, date_format: str) -> None:
 
 
 @command(options_metavar="")
-@option("--all/--outdated", is_flag=True, help="List only outdated packages.", default=True, show_default=True)
+@option(
+    "--all/--outdated",
+    is_flag=True,
+    help="Choose package list scope: --all (default) or only outdated packages (--outdated).",
+    default=True,
+    show_default=True,
+)
 def update_python_packages(all: bool) -> None:
     """Update python packages in the environment."""
     if system() != "Windows":
