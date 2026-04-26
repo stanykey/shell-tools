@@ -1,6 +1,6 @@
 [project]
 name = "shell-tools"
-version = "1.2.5"
+version = "1.2.6"
 description = "Set of Python applications/scripts for different purposes"
 readme = "README.md"
 license = "MIT"
