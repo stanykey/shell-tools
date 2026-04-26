@@ -42,6 +42,12 @@ def get_program_name() -> str:
     return Path(argv[0]).stem
 
 
+def get_nvim_config_directory() -> Path:
+    path = Path("~/AppData/Local/nvim" if system() == "Windows" else "~/.config/nvim").expanduser()
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 Processor = Callable[[list[Path]], None]
 
 
@@ -182,19 +188,17 @@ def sync_repos(root_dir: Path, recursive: bool, submodules: bool) -> None:
 def edit_nvim_config() -> None:
     """Shortcut to edit nvim config."""
 
-    def get_nvim_config_directory() -> Path:
-        path = Path("~/AppData/Local/nvim" if system() == "Windows" else "~/.config/nvim").expanduser()
-        path.mkdir(parents=True, exist_ok=True)
-        return path
-
     working_directory = Path.cwd()
     try:
         config_dir = get_nvim_config_directory()
         chdir(config_dir)
 
         arguments = ["nvim", str(config_dir)]
-        with Popen(arguments) as nvim:
-            nvim.wait()
+        try:
+            with Popen(arguments) as nvim:
+                nvim.wait()
+        except FileNotFoundError:
+            raise ClickException("'nvim' was not found in PATH.") from None
     finally:
         chdir(working_directory)
 

@@ -9,6 +9,7 @@ from unittest.mock import patch
 from click.testing import CliRunner
 
 from shell_tools.cli import discover_empty_dirs
+from shell_tools.cli import edit_nvim_config
 from shell_tools.cli import generate_file
 from shell_tools.cli import pretty_date
 from shell_tools.cli import sync_repos
@@ -102,6 +103,18 @@ class CliTestCase(TestCase):
 
         self.assertEqual(1, result.exit_code)
         self.assertIn("Error:", result.output)
+
+    def test_edit_nvim_config_returns_non_zero_when_nvim_binary_missing(self) -> None:
+        with TemporaryDirectory() as dir_name:
+            config_dir = Path(dir_name)
+            with (
+                patch("shell_tools.cli.get_nvim_config_directory", return_value=config_dir),
+                patch("shell_tools.cli.Popen", side_effect=FileNotFoundError),
+            ):
+                result = self.runner.invoke(edit_nvim_config, [])
+
+        self.assertEqual(1, result.exit_code)
+        self.assertIn("Error: 'nvim' was not found in PATH.", result.output)
 
     def test_sync_repos_prints_synced_repositories(self) -> None:
         with TemporaryDirectory() as root_dir_name:
