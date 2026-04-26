@@ -118,6 +118,11 @@ def generate_file(path: Path, size: str, line_size: int) -> None:
         echo(f"Run '{get_program_name()} --help' to see supported options.")
         return
 
+    if line_size <= 0:
+        echo(f"Invalid line size (line-size={line_size}).")
+        echo(f"Run '{get_program_name()} --help' to see supported options.")
+        return
+
     echo(f"Generating a {size} file at '{path}'.")
     make_random_file(path, file_size, line_size)
     echo("File generation finished.")

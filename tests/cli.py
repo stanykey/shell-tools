@@ -71,6 +71,26 @@ class CliTestCase(TestCase):
             self.assertFalse(output_path.exists())
             self.assertIn("Invalid file size", result.output)
 
+    def test_generate_file_with_zero_line_size_keeps_exit_zero(self) -> None:
+        with TemporaryDirectory() as dir_name:
+            output_path = Path(dir_name) / "sample.bin"
+
+            result = self.runner.invoke(generate_file, [str(output_path), "--size", "1kb", "--line-size", "0"])
+
+            self.assertEqual(0, result.exit_code)
+            self.assertFalse(output_path.exists())
+            self.assertIn("Invalid line size", result.output)
+
+    def test_generate_file_with_negative_line_size_keeps_exit_zero(self) -> None:
+        with TemporaryDirectory() as dir_name:
+            output_path = Path(dir_name) / "sample.bin"
+
+            result = self.runner.invoke(generate_file, [str(output_path), "--size", "1kb", "--line-size", "-8"])
+
+            self.assertEqual(0, result.exit_code)
+            self.assertFalse(output_path.exists())
+            self.assertIn("Invalid line size", result.output)
+
     def test_pretty_date_default_timestamp_exit_zero(self) -> None:
         result = self.runner.invoke(pretty_date, [])
 
