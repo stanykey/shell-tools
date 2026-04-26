@@ -45,4 +45,4 @@ uv run python -m unittest discover -s tests -p "*.py"
 - `shell_tools/dirs/`: empty-directory discovery helpers.
 - `shell_tools/files/`: random file generation helpers.
 - `shell_tools/git/`: git repository discovery/update helpers.
-- `tests/`: unit tests by domain (`dirs`, `files`).
+- `tests/`: unit tests by domain (`dirs`, `files`, `git`) plus CLI coverage in `tests/cli.py`.
