@@ -33,7 +33,7 @@ uv run pre-commit run --all-files
 ## Tests
 
 ```powershell
-uv run python -m unittest discover -s tests
+uv run python -m unittest discover -s tests -p "*.py"
 ```
 
 ## Project Structure
